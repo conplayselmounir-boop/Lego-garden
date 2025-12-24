@@ -1,0 +1,5 @@
+{
+  "name": "Lego Garden 3D",
+  "description": "A 3D interactive garden builder starting with a procedural Lego-style baseplate using React Three Fiber.",
+  "requestFramePermissions": []
+}
