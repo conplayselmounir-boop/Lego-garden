@@ -14,14 +14,18 @@ const LegoReindeer: React.FC<{ position: [number, number, number], isRudolph?: b
     const groupRef = useRef<THREE.Group>(null);
     const { width: w, height: h, depth: d } = LEGO_DIMENSIONS;
     
-    // Gallop Animation
+    // Subtle Idle Animation
     useFrame((state) => {
         if (groupRef.current) {
-            const t = state.clock.elapsedTime * 10 + delay;
-            // Bobbing up and down
-            groupRef.current.position.y = position[1] + Math.sin(t) * 0.2;
-            // Slight pitching (rocking forward/back)
-            groupRef.current.rotation.x = Math.sin(t) * 0.1;
+            // Slower speed for idle/hovering look (approx 0.5 Hz)
+            const t = state.clock.elapsedTime * 3 + delay;
+            
+            // Bobbing up and down slightly (reduced amplitude)
+            groupRef.current.position.y = position[1] + Math.sin(t) * 0.08;
+            
+            // Gentle rocking motion on X-axis (pitching)
+            // Using cos for slight phase offset from the bobbing
+            groupRef.current.rotation.x = Math.cos(t) * 0.05;
         }
     });
 

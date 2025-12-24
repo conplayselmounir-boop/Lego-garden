@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sprout, X, ShoppingBag, LogOut, Gift, Snowflake, Coins, TreePine, Shovel, DollarSign } from 'lucide-react';
+import { Sprout, X, ShoppingBag, LogOut, Gift, Snowflake, Coins, TreePine, Shovel, DollarSign, MapPin } from 'lucide-react';
 import { InteractionState, Inventory } from '../types';
 
 interface OverlayProps {
@@ -13,6 +13,7 @@ interface OverlayProps {
   setSelectedSeed: (id: string | null) => void;
   onSellPlants: () => void;
   readyCount: number; // How many plants are ready to sell
+  onTeleport: (target: 'seed' | 'garden' | 'sell') => void;
 }
 
 // Custom CSS component to look like the 3D Lego Santa Head
@@ -59,7 +60,8 @@ export const Overlay: React.FC<OverlayProps> = ({
     selectedSeed,
     setSelectedSeed,
     onSellPlants,
-    readyCount
+    readyCount,
+    onTeleport
 }) => {
   
   const handleBuy = (seed: SeedItem) => {
@@ -77,7 +79,7 @@ export const Overlay: React.FC<OverlayProps> = ({
     <div className="absolute top-0 left-0 w-full h-full pointer-events-none p-6 flex flex-col justify-between z-40">
       
       {/* Top Header Row */}
-      <div className="flex justify-between items-start pointer-events-auto w-full">
+      <div className="flex justify-between items-start pointer-events-auto w-full relative">
         {/* Title Card */}
         <div className="bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border-2 border-green-600 max-w-xs relative overflow-hidden hidden sm:block">
           <div className="absolute top-0 left-0 w-full h-2 bg-blue-50"></div>
@@ -87,6 +89,42 @@ export const Overlay: React.FC<OverlayProps> = ({
             </div>
             <h1 className="text-xl font-bold text-gray-800 tracking-tight">Lego Garden <span className="text-red-600">3D</span></h1>
           </div>
+        </div>
+
+        {/* --- TELEPORT BUTTONS (TOP CENTER) --- */}
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 flex gap-2">
+            {/* Seed Shop Teleport */}
+            <button 
+                onClick={() => onTeleport('seed')}
+                className="group flex flex-col items-center bg-blue-600 border-b-4 border-blue-800 rounded-lg p-2 active:translate-y-1 active:border-b-0 transition-all shadow-md hover:bg-blue-500"
+            >
+                <div className="bg-blue-800 p-1 rounded mb-1 group-hover:bg-blue-700">
+                     <ShoppingBag className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-[10px] font-bold text-white uppercase tracking-wider">Seed</span>
+            </button>
+
+            {/* Garden Teleport */}
+            <button 
+                onClick={() => onTeleport('garden')}
+                className="group flex flex-col items-center bg-green-600 border-b-4 border-green-800 rounded-lg p-2 active:translate-y-1 active:border-b-0 transition-all shadow-md hover:bg-green-500"
+            >
+                <div className="bg-green-800 p-1 rounded mb-1 group-hover:bg-green-700">
+                     <MapPin className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-[10px] font-bold text-white uppercase tracking-wider">Garden</span>
+            </button>
+
+            {/* Sell Shop Teleport */}
+            <button 
+                onClick={() => onTeleport('sell')}
+                className="group flex flex-col items-center bg-red-600 border-b-4 border-red-800 rounded-lg p-2 active:translate-y-1 active:border-b-0 transition-all shadow-md hover:bg-red-500"
+            >
+                <div className="bg-red-800 p-1 rounded mb-1 group-hover:bg-red-700">
+                     <DollarSign className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-[10px] font-bold text-white uppercase tracking-wider">Sell</span>
+            </button>
         </div>
 
         {/* MONEY DISPLAY */}

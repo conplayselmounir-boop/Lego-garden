@@ -26,6 +26,9 @@ const App: React.FC = () => {
   // Santa Event System
   const [isSantaEventActive, setIsSantaEventActive] = useState(false);
 
+  // Teleport System
+  const [teleportTarget, setTeleportTarget] = useState<{ pos: THREE.Vector3, timestamp: number } | null>(null);
+
   // --- UNIFIED EVENT MANAGER ---
   // To prevent overlapping events, we use a single loop and a lock.
   const eventLockedRef = useRef(false);
@@ -284,6 +287,15 @@ const App: React.FC = () => {
     }
   };
 
+  const handleTeleport = (target: 'seed' | 'garden' | 'sell') => {
+      let pos = new THREE.Vector3(0, 0, 15);
+      if (target === 'seed') pos.set(-18, 0, 8);
+      if (target === 'garden') pos.set(0, 0, 15);
+      if (target === 'sell') pos.set(18, 0, 8);
+      
+      setTeleportTarget({ pos, timestamp: Date.now() });
+  };
+
   const readyCount = plants.filter(p => p.growth >= 1).length;
 
   return (
@@ -298,6 +310,7 @@ const App: React.FC = () => {
         lightningStrikes={lightningStrikes}
         isSantaEventActive={isSantaEventActive}
         onCandyHit={handleCandyHit}
+        teleportTarget={teleportTarget}
       />
       
       {/* Visual Storm Indicator */}
@@ -328,6 +341,7 @@ const App: React.FC = () => {
         setSelectedSeed={setSelectedSeed}
         onSellPlants={handleSellPlants}
         readyCount={readyCount}
+        onTeleport={handleTeleport}
       />
       <Joystick onMove={handleJoystickMove} />
     </div>

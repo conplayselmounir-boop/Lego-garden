@@ -44,7 +44,7 @@ export const LegoPlant: React.FC<LegoPlantProps> = ({ type, position, growth, sc
     // Primary Color (Leaves/Main): Storm = Neon Purple, Candy = Christmas Red
     const mutPrimary = isCandy ? LegoColors.CHRISTMAS_RED : LegoColors.NEON_PURPLE;
     
-    // Secondary Color (Highlights/Thorns): Storm = Electric Blue, Candy = White or Gold
+    // Secondary Color (Highlights/Thorns/Berries): Storm = Electric Blue, Candy = Snow White
     const mutSecondary = isCandy ? LegoColors.SNOW_WHITE : LegoColors.ELECTRIC_BLUE;
 
     switch (type) {
@@ -53,7 +53,6 @@ export const LegoPlant: React.FC<LegoPlantProps> = ({ type, position, growth, sc
         b.push({ pos: [0, 0.4 * h, 0], size: [0.2 * w, 0.6 * h, 0.2 * d], color: stemColor });
         
         // Leaves
-        // If mutated, override specific colors
         const fernColor = isMutated ? mutPrimary : LegoColors.FERN_TEAL;
         
         b.push({ pos: [-0.3 * w, 0.8 * h, 0], size: [0.4 * w, 0.2 * h, 0.8 * d], color: fernColor, rot: [0, 0, 0.5] });
@@ -77,8 +76,9 @@ export const LegoPlant: React.FC<LegoPlantProps> = ({ type, position, growth, sc
 
       case 'golden_berry':
         // Bush body
-        const bushColor = isMutated ? (isCandy ? LegoColors.SNOW_WHITE : "#222") : LegoColors.GRASS_GREEN;
-        const berryColor = isMutated ? (isCandy ? LegoColors.CHRISTMAS_RED : LegoColors.ELECTRIC_BLUE) : LegoColors.GOLD;
+        const bushColor = isMutated ? (isCandy ? mutPrimary : "#222") : LegoColors.GRASS_GREEN;
+        // Berries
+        const berryColor = isMutated ? mutSecondary : LegoColors.GOLD;
         
         b.push({ pos: [0, 0.4 * h, 0], size: [0.8 * w, 0.6 * h, 0.8 * d], color: bushColor });
         b.push({ pos: [0, 0.8 * h, 0], size: [0.6 * w, 0.6 * h, 0.6 * d], color: bushColor });
@@ -143,8 +143,8 @@ export const LegoPlant: React.FC<LegoPlantProps> = ({ type, position, growth, sc
         {/* Ready Indicator */}
         {growth >= 1 && (
             <group ref={readyIndicatorRef} position={[0, 2 * h, 0]}>
-                <mesh castShadow>
-                    <cylinderGeometry args={[0.3, 0.3, 0.1, 16]} rotation={[Math.PI/2, 0, 0]} />
+                <mesh castShadow rotation={[Math.PI/2, 0, 0]}>
+                    <cylinderGeometry args={[0.3, 0.3, 0.1, 16]} />
                     <meshStandardMaterial color={isMutated ? (mutationSource === 'candy' ? LegoColors.CANDY_RED : LegoColors.NEON_PURPLE) : LegoColors.GOLD} metalness={0.8} roughness={0.2} />
                 </mesh>
             </group>

@@ -23,6 +23,7 @@ interface SceneProps {
   lightningStrikes: { id: string; position: [number, number, number] }[];
   isSantaEventActive: boolean;
   onCandyHit: (pos: THREE.Vector3) => void;
+  teleportTarget: { pos: THREE.Vector3, timestamp: number } | null;
 }
 
 export const Scene: React.FC<SceneProps> = ({ 
@@ -34,7 +35,8 @@ export const Scene: React.FC<SceneProps> = ({
     isStormActive,
     lightningStrikes,
     isSantaEventActive,
-    onCandyHit
+    onCandyHit,
+    teleportTarget
 }) => {
   // Approximate Y level of the baseplate surface
   const SURFACE_Y = -1 + LEGO_DIMENSIONS.height + LEGO_DIMENSIONS.studHeight;
@@ -170,6 +172,7 @@ export const Scene: React.FC<SceneProps> = ({
           joystickRef={joystickRef} 
           onInteractionChange={onInteractionChange}
           currentInteraction={currentInteraction}
+          teleportTarget={teleportTarget}
         />
 
       </Suspense>

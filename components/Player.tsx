@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { JoystickData, InteractionState } from '../types';
@@ -10,9 +10,10 @@ interface PlayerProps {
   joystickRef: React.MutableRefObject<JoystickData>;
   onInteractionChange: (state: InteractionState) => void;
   currentInteraction: InteractionState;
+  teleportTarget: { pos: THREE.Vector3, timestamp: number } | null;
 }
 
-export const Player: React.FC<PlayerProps> = ({ joystickRef, onInteractionChange, currentInteraction }) => {
+export const Player: React.FC<PlayerProps> = ({ joystickRef, onInteractionChange, currentInteraction, teleportTarget }) => {
   // Initial Spawn: Bottom center
   const [position, setPosition] = useState(new THREE.Vector3(0, 0, 15));
   const playerRef = useRef<THREE.Group>(null);
@@ -31,6 +32,18 @@ export const Player: React.FC<PlayerProps> = ({ joystickRef, onInteractionChange
 
   const { camera } = useThree();
   const vec = new THREE.Vector3(); // Temp vector
+
+  // Handle Teleport
+  useEffect(() => {
+      if (teleportTarget) {
+          setPosition(teleportTarget.pos.clone());
+          // We also need to move the camera focus immediately so it doesn't lag behind
+          if (controlsRef.current) {
+              controlsRef.current.target.copy(teleportTarget.pos);
+              // Optional: If you want to reset the camera angle too, do it here, but keeping current angle is usually better
+          }
+      }
+  }, [teleportTarget]);
 
   useFrame(() => {
     // 1. Get Input from Virtual Joystick
